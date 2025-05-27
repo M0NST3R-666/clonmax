@@ -22,6 +22,15 @@ class Userbot(Client):
         LOGGER(__name__).info(f"Starting Assistants...")
         if config.STRING1:
             await self.one.start()
+            if not self.one.me: # <<< NEW CHECK
+                LOGGER(__name__).critical(
+                    "Assistant Account 1 (self.one) failed to initialize properly. `self.one.me` is None. "
+                    "This is likely due to an invalid or expired STRING1 session. Assistant cannot function."
+                )
+                # Option 1: Raise an error to halt this assistant's setup
+                raise RuntimeError("Assistant client (self.one) failed to initialize: self.one.me is None. Invalid STRING1?")
+                # Option 2: Simply return, and other parts of the code will need to handle a non-functional assistant
+                # return # For now, let's raise an error to make it explicit.
             try:
                 await self.one.join_chat("ProBotGc")
                 await self.one.join_chat("ProBotts")
