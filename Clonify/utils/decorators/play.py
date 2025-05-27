@@ -116,6 +116,16 @@ def PlayWrapper(command):
 
         if not await is_active_chat(chat_id):
             userbot = await get_assistant(chat_id)
+              # <<< NEW CHECK >>>
+            if not userbot or not userbot.id or not userbot.username:
+                from Clonify.logging import LOGGER # Ensure LOGGER is available
+                LOGGER(__name__).warning(
+                    f"Assistant for chat {chat_id} (userbot object: {userbot}) is not properly configured or its details "
+                    f"(id: {getattr(userbot, 'id', 'N/A')}, username: {getattr(userbot, 'username', 'N/A')}) are missing."
+                )
+                return await message.reply_text("The music assistant client is not configured correctly or is offline. Please contact the bot administrator or try again later.")
+            # <<< END NEW CHECK >>>
+
             try:
                 try:
                     get = await app.get_chat_member(chat_id, userbot.id)
